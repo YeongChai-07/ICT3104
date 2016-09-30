@@ -1,6 +1,6 @@
 @extends('layouts.Layout')
 
-@section('title','View Grade')
+@section('title','View Recommendation')
 
 @section('content')
 <style>
@@ -8,10 +8,10 @@ textarea { width:250px !important; height:100px !important; }
 </style>
 
 <div class="generalHeader">
-    View Grades
+    View Recommendation
 </div>
 <body>
-   
+    {{ Form::open() }}
     @if(Session::has('error_message'))
         <div class="alert alert-danger">{{ Session::get('error_message') }}</div>
         {{Session::forget('error_message')}}
@@ -20,22 +20,22 @@ textarea { width:250px !important; height:100px !important; }
  <div class="row">
     <div class="col-md-12 col-sm-12">
         <br><br>
-        <table width="100%" cellpadding="5" cellspacing="5" id="gradesList" border="1"  class="table table-striped table-bordered dt-responsive" >
+        <table width="100%" cellpadding="5" cellspacing="5" id="recommendationsList" border="1"  class="table table-striped table-bordered dt-responsive" >
             <thead>
 
-                <tr><th>S/N</th><th>Module</th><th>Grade</th></tr>
+                <tr><th>S/N</th><th>Module</th><th>Recommendation</th></tr>
             </thead>
             <tbody>
-                @foreach($grades as $key=>$graded)
+                @foreach($recommendations as $key=>$recommendation)
                 <tr>
-                <td>{{   $graded->id }}</td>
-                <td>{{  $graded->modulename }}</td>
-                <td> {{ $graded->grade }}</td>
+                <td>{{   $recommendation->id }}</td>
+                <td>{{  $recommendation->modulename }}</td>
+                <td> {{ $recommendation->recommendation }}</td>
                 </tr>  
                 @endforeach
             </tbody>
         </table>
-        {!! $grades->render() !!}
+        {!! $recommendations->render() !!}
     </div>
 </div>   
 
@@ -55,7 +55,7 @@ function checkDelete(){
 <script type="text/javascript">
   $(function($) {
   
-  $('#gradesList').DataTable( {
+  $('#recommendationsList').DataTable( {
   aaSorting : [[1, 'asc']],
     responsive: true,
   'paging':false,

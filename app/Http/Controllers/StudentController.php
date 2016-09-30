@@ -58,8 +58,15 @@ class StudentController extends Controller {
     {
         $studentId = auth()->guard('student')->user()->studentid;
 
-        $grades = DB::table('grades')
-                ->where('studentid',$studentId)->paginate(5);
+        // $grades = DB::table('grades')
+        //         ->where('studentid',$studentId)->paginate(5);
+
+
+        $grades = DB::table('module')
+            ->join('grades', 'grades.moduleid', '=', 'module.id')
+            ->select('module.*','grades.*')
+            ->where('grades.studentid', $studentId)->paginate(5);    
+
 
         return view('student.index')->with([
             'grades' => $grades
@@ -83,4 +90,24 @@ class StudentController extends Controller {
     //             ->paginate(5);
 
     // }
+
+        public function recommendation()
+    {
+        $studentId = auth()->guard('student')->user()->studentid;
+
+        // $grades = DB::table('grades')
+        //         ->where('studentid',$studentId)->paginate(5);
+
+
+        $recommendation = DB::table('module')
+            ->join('recommendation', 'recommendation.moduleid', '=', 'module.id')
+            ->select('module.*','recommendation.*')
+            ->where('recommendation.studentid', $studentId)->paginate(5);    
+
+            
+        return view('student.recommendation')->with([
+            'recommendations' => $recommendation
+            ]);      
+    }
 }
+

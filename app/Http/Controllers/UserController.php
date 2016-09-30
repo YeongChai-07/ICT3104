@@ -6,7 +6,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\User;
-
+use App\Lecturer;
+use App\Student;
+use App\Hod;
 use Auth;
 use Hash;
 use DB;
@@ -93,5 +95,341 @@ class UserController extends Controller {
         auth()->guard('web')->logout();
         $request->session()->flush();
         return redirect('user/login');
+    }
+
+
+    public function showAddLecturer(){
+        return view('user.addlecturer');
+    }
+
+    public function addLecturer(Request $request)
+    {
+        $input = $request->all();
+        $emailcheck = Lecturer::where('lectureremail', $input['email'])
+                    ->first();
+
+        $id = $emailcheck['lecturerid'];
+        if(!$id)
+        {
+            $password = substr(md5(uniqid(mt_rand(), true)) , 0, 6);
+            $password = 'demo123';
+            $hash = Hash::make($password);
+
+            $lecturerid = DB::table('lecturer')->insertGetId([
+            'lecturername' => $input['name'], 
+            'lectureremail' =>  $input['email'],
+            'password' => $hash
+            ]);
+
+
+            // //set gmail email and password in .env to work             
+            // $data = array( 'name' => $input['name'], 'email' =>  trim($input['email']), 'password' => $password );
+            // Mail::send('email.register', $data,  function ($message) use ($data) {
+            
+            // //Uncomment to work like intedashboard;
+            // $message->to(trim($data['email']))->subject('You are registered to Inteplayer');
+            //  //$message->to($input[email])->subject('You are registered to Inteplayer');
+            // });
+                         
+        }
+        else
+        {
+            Session::set('error_message', "Lecturer Exists");
+            return redirect()->back();             
+        }
+
+
+            Session::set('success_message', "Lecturer Created Successfully");
+            return redirect()->back(); 
+    }
+
+
+        public function editLecturer($id)
+    {
+    
+            $lecturer = Lecturer::where('lecturerid',$id)                              
+                                ->first();  
+        
+            
+            
+            return view('user.editlecturer',['lecturer' => $lecturer]);
+    }
+
+    /**
+     * Update Teacher Details based on inputs
+     *
+     * @param  $id
+     * @return View User editteacher 
+     */
+    public function updateLecturer($id, Request $request) 
+    {
+          
+        $lecturer = Lecturer::findorFail($id);
+                  
+        
+       $input= $request->all();
+       //check if duplicate email
+       if(trim($lecturer->lectureremail) == trim($input['email']))
+       {
+           $emailvalidation = 'required|email';
+       }
+       else
+       {
+           $emailvalidation = 'required|email|unique:lecturer,lectureremail';
+       }
+
+        $validator= validator($request->all(), [
+                'name' => 'required',
+                'email' => $emailvalidation,
+                /*' studentemail' => 'required|email|unique:m_student,studentemail,'.$id,  */
+        ]);
+
+   
+        //Validate inputs
+        if ($validator -> fails())
+        {
+            Session::set('error_message', "Email already exists");
+            return redirect()->back();
+        }     
+        
+       
+       DB::table('lecturer')
+                ->where('lecturerid', $id)
+                ->update(['lecturername' => $input['name'],'lectureremail' => $input['email']]);          
+          
+                Session::set('success_message', "Profile updated sucessfully."); 
+               return redirect()->back();
+          
+    }
+
+    public function deleteLecturer($id){
+        
+           DB::table('lecturer')->where('lecturerid', $id)->delete();
+                                       
+        Session::set('success_message', "Lecturer deleted Successfully");  
+        return redirect()->back();
+    }
+
+
+    public function showAddStudent(){
+        return view('user.addstudent');
+    }
+
+    public function addStudent(Request $request)
+    {
+        $input = $request->all();
+        $emailcheck = Student::where('studentemail', $input['email'])
+                    ->first();
+
+        $id = $emailcheck['studentid'];
+        if(!$id)
+        {
+            $password = substr(md5(uniqid(mt_rand(), true)) , 0, 6);
+            $password = 'demo123';
+            $hash = Hash::make($password);
+
+            $studentid = DB::table('students')->insertGetId([
+            'studentname' => $input['name'], 
+            'studentemail' =>  $input['email'],
+            'password' => $hash
+            ]);
+
+
+            // //set gmail email and password in .env to work             
+            // $data = array( 'name' => $input['name'], 'email' =>  trim($input['email']), 'password' => $password );
+            // Mail::send('email.register', $data,  function ($message) use ($data) {
+            
+            // //Uncomment to work like intedashboard;
+            // $message->to(trim($data['email']))->subject('You are registered to Inteplayer');
+            //  //$message->to($input[email])->subject('You are registered to Inteplayer');
+            // });
+                         
+        }
+        else
+        {
+            Session::set('error_message', "Student Exists");
+            return redirect()->back();             
+        }
+
+
+            Session::set('success_message', "Student Created Successfully");
+            return redirect()->back(); 
+    }
+
+        public function editStudent($id)
+    {
+    
+            $student = Student::where('studentid',$id)                              
+                                ->first();  
+        
+            
+            
+            return view('user.editstudent',['student' => $student]);
+    }
+
+    /**
+     * Update Teacher Details based on inputs
+     *
+     * @param  $id
+     * @return View User editteacher 
+     */
+    public function updateStudent($id, Request $request) 
+    {
+          
+        $student = Student::findorFail($id);
+                  
+        
+       $input= $request->all();
+       //check if duplicate email
+       if(trim($student->studentemail) == trim($input['email']))
+       {
+           $emailvalidation = 'required|email';
+       }
+       else
+       {
+           $emailvalidation = 'required|email|unique:students,studentemail';
+       }
+
+        $validator= validator($request->all(), [
+                'name' => 'required',
+                'email' => $emailvalidation,
+                /*' studentemail' => 'required|email|unique:m_student,studentemail,'.$id,  */
+        ]);
+
+   
+        //Validate inputs
+        if ($validator -> fails())
+        {
+            Session::set('error_message', "Email already exists");
+            return redirect()->back();
+        }     
+        
+       
+       DB::table('students')
+                ->where('studentid', $id)
+                ->update(['studentname' => $input['name'],'studentemail' => $input['email']]);          
+          
+                Session::set('success_message', "Profile updated sucessfully."); 
+               return redirect()->back();
+          
+    }
+
+    public function deleteStudent($id){
+        
+           DB::table('students')->where('studentid', $id)->delete();
+                                       
+        Session::set('success_message', "Student deleted Successfully");  
+        return redirect()->back();
+    } 
+
+    public function showAddHod(){
+        return view('user.addhod');
+    }
+
+    public function addHod(Request $request)
+    {
+        $input = $request->all();
+        $emailcheck = Hod::where('hodemail', $input['email'])
+                    ->first();
+
+        $id = $emailcheck['hodid'];
+        if(!$id)
+        {
+            $password = substr(md5(uniqid(mt_rand(), true)) , 0, 6);
+            $password = 'demo123';
+            $hash = Hash::make($password);
+
+            $studentid = DB::table('hod')->insertGetId([
+            'hodname' => $input['name'], 
+            'hodemail' =>  $input['email'],
+            'password' => $hash
+            ]);
+
+
+            // //set gmail email and password in .env to work             
+            // $data = array( 'name' => $input['name'], 'email' =>  trim($input['email']), 'password' => $password );
+            // Mail::send('email.register', $data,  function ($message) use ($data) {
+            
+            // //Uncomment to work like intedashboard;
+            // $message->to(trim($data['email']))->subject('You are registered to Inteplayer');
+            //  //$message->to($input[email])->subject('You are registered to Inteplayer');
+            // });
+                         
+        }
+        else
+        {
+            Session::set('error_message', "Hod Exists");
+            return redirect()->back();             
+        }
+
+
+            Session::set('success_message', "Hod Created Successfully");
+            return redirect()->back(); 
+    }
+
+        public function editHod($id)
+    {
+    
+            $hod = hod::where('hodid',$id)                              
+                                ->first();  
+        
+            
+            
+            return view('user.edithod',['hod' => $hod]);
+    }
+
+    /**
+     * Update Teacher Details based on inputs
+     *
+     * @param  $id
+     * @return View User editteacher 
+     */
+    public function updateHod($id, Request $request) 
+    {
+          
+        $hod = Hod::findorFail($id);
+                  
+        
+       $input= $request->all();
+       //check if duplicate email
+       if(trim($hod->hodemail) == trim($input['email']))
+       {
+           $emailvalidation = 'required|email';
+       }
+       else
+       {
+           $emailvalidation = 'required|email|unique:hod,hodemail';
+       }
+
+        $validator= validator($request->all(), [
+                'name' => 'required',
+                'email' => $emailvalidation,
+                /*' studentemail' => 'required|email|unique:m_student,studentemail,'.$id,  */
+        ]);
+
+   
+        //Validate inputs
+        if ($validator -> fails())
+        {
+            Session::set('error_message', "Email already exists");
+            return redirect()->back();
+        }     
+        
+       
+       DB::table('hod')
+                ->where('hodid', $id)
+                ->update(['hodname' => $input['name'],'hodemail' => $input['email']]);          
+          
+                Session::set('success_message', "Profile updated sucessfully."); 
+               return redirect()->back();
+          
+    }
+
+    public function deleteHod($id){
+        
+           DB::table('hod')->where('hodid', $id)->delete();
+                                       
+        Session::set('success_message', "Hod deleted Successfully");  
+        return redirect()->back();
     }
 }

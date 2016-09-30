@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Lecturer;
+use App\Module;
 
 use Auth;
 use Hash;
@@ -56,7 +57,19 @@ class LecturerController extends Controller {
 
     public function index()
     {
-        return view('lecturer.index');
+        $lecturerId = auth()->guard('lecturer')->user()->lecturerid;
+
+        // $grades = DB::table('grades')
+        //         ->where('studentid',$studentId)->paginate(5);
+
+
+        $modules = DB::table('module')
+            ->where('module.lecturerid', $lecturerId)->paginate(5);    
+
+
+        return view('lecturer.index')->with([
+            'modules' => $modules
+            ]);  
     }
 
 
@@ -65,6 +78,26 @@ class LecturerController extends Controller {
         auth()->guard('lecturer')->logout();
         $request->session()->flush();
         return redirect('lecturer/login');
+    }
+
+    public function showManageGrade(Request $request, $id){
+
+            $moduleid = $id;
+
+            $module = Module::findorFail($id);
+
+
+            $grades = DB::table('module')
+            ->join('grades', 'grades.moduleid', '=', 'module.id')
+            ->join('students','students.studentid', '=', 'grades.studentid')
+            ->select('module.*','grades.*','students.*')
+            ->where('grades.moduleid', $moduleid)->paginate(5);    
+
+           
+        return view('lecturer.managegrade')->with([
+            'grades' => $grades,
+            'module' => $module
+            ]); 
     }
 
 }

@@ -2,7 +2,7 @@
 @section('content')
 
 <body>
-    {{ Form::open() }}
+  
     @if(Session::has('error_message'))
         <div class="alert alert-danger">{{ Session::get('error_message') }}</div>
         {{Session::forget('error_message')}}

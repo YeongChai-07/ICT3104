@@ -11,7 +11,7 @@ textarea { width:250px !important; height:100px !important; }
     View Hod
 </div>
 <body>
-    {{ Form::open() }}
+   
     @if(Session::has('error_message'))
         <div class="alert alert-danger">{{ Session::get('error_message') }}</div>
         {{Session::forget('error_message')}}
@@ -21,9 +21,10 @@ textarea { width:250px !important; height:100px !important; }
     <div class="col-md-12 col-sm-12">
         <br><br>
 
+        <a class="btn btn-info" href="addhod">Add new Hod</a>
         <table width="100%" cellpadding="5" cellspacing="5" id="hodsList" border="1"  class="table table-striped table-bordered dt-responsive" >
             <thead>
-                <tr><th>S/N</th><th>Name</th><th>Email</th>
+                <tr><th>S/N</th><th>Name</th><th>Email</th><th width="40%">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,12 @@ textarea { width:250px !important; height:100px !important; }
                 <td>{{   $hod->hodid }}</td>
                 <td>{{  $hod->hodname }}</td>
                 <td class="td-limit">{{  $hod->hodemail }}</td>
+                <td>
+
+                 <a class="btn btn-info" href="{{  $hod->hodid }}/edithod">Edit</a>
+                <a class="btn btn-danger" onclick="checkDelete()" href="{{  $hod->hodid }}/deletehod">Delete</a>
+
+                </td>
                 </tr>  
                 @endforeach
             </tbody>

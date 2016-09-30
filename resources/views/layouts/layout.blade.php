@@ -16,7 +16,7 @@
             <div class="container">
                 <div class="navbar-header">
                     <a style="font-size:1.7em; font-weight:bold; text-decoration:none;" href="">
-                        <img src="{{ URL::asset('assets/images/interlearn-png-logo.png') }}" style="margin:10px;" width="25" alt="IntePlayer" >
+                        <img src="{{ URL::asset('assets/images/pik.jpg') }}" style="margin:10px;" width="25" alt="IntePlayer" >
                     </a>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
@@ -31,6 +31,8 @@
                         <!-- Login Buttons (If not logged in) -->
                         <!-- Student -->
                         @if(auth()->guard('student')->check())
+                            <li><a href="{{URL::asset('student/index')}}">View Grade</a></li>
+                            <li><a href="{{URL::asset('student/recommendation')}}">View Recommendation</a></li>
                             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ auth()->guard('student')->user()->studentname }} <span class="glyphicon glyphicon-cog"></span></a>
                                     <ul class="dropdown-menu">
                                         <li><a href="{{URL::asset('student/logout')}}">Log Out</a></li>

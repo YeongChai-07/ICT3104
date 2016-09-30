@@ -11,7 +11,7 @@ textarea { width:250px !important; height:100px !important; }
     View Students
 </div>
 <body>
-    {{ Form::open() }}
+   
     @if(Session::has('error_message'))
         <div class="alert alert-danger">{{ Session::get('error_message') }}</div>
         {{Session::forget('error_message')}}
@@ -21,9 +21,11 @@ textarea { width:250px !important; height:100px !important; }
     <div class="col-md-12 col-sm-12">
         <br><br>
 
+        <a class="btn btn-info" href="addstudent">Add new Student</a>
+
         <table width="100%" cellpadding="5" cellspacing="5" id="studentsList" border="1"  class="table table-striped table-bordered dt-responsive" >
             <thead>
-                <tr><th>S/N</th><th>Name</th><th>Email</th>
+                <tr><th>S/N</th><th>Name</th><th>Email</th><th width="40%">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +34,12 @@ textarea { width:250px !important; height:100px !important; }
                 <td>{{   $student->studentid }}</td>
                 <td>{{  $student->studentname }}</td>
                 <td class="td-limit">{{  $student->studentemail }}</td>
+                <td>
+
+                 <a class="btn btn-info" href="{{  $student->studentid }}/editstudent">Edit</a>
+                <a class="btn btn-danger" onclick="checkDelete()" href="{{  $student->studentid }}/deletestudent">Delete</a>
+
+                </td>
                 </tr>  
                 @endforeach
             </tbody>

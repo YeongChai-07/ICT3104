@@ -1,6 +1,6 @@
 @extends('layouts.Layout')
 
-@section('title','View Grade')
+@section('title','Manage Grade')
 
 @section('content')
 <style>
@@ -8,7 +8,7 @@ textarea { width:250px !important; height:100px !important; }
 </style>
 
 <div class="generalHeader">
-    View Grades
+    Manage Grade for {{$module->modulename}}
 </div>
 <body>
    
@@ -23,20 +23,24 @@ textarea { width:250px !important; height:100px !important; }
         <table width="100%" cellpadding="5" cellspacing="5" id="gradesList" border="1"  class="table table-striped table-bordered dt-responsive" >
             <thead>
 
-                <tr><th>S/N</th><th>Module</th><th>Grade</th></tr>
+                <tr><th>S/N</th><th>Student Name</th><th>Grade</th>
+                </tr>
             </thead>
             <tbody>
-                @foreach($grades as $key=>$graded)
+                @foreach($grades as $key=>$grade)
                 <tr>
-                <td>{{   $graded->id }}</td>
-                <td>{{  $graded->modulename }}</td>
-                <td> {{ $graded->grade }}</td>
+                <td>{{   $grade->id }}</td>
+                <td>{{  $grade->studentname }}</td>
+                <td> {{ $grade->grade }}</td>
+
                 </tr>  
                 @endforeach
             </tbody>
         </table>
         {!! $grades->render() !!}
+                <a href="{{URL::asset('lecturer/index')}}" class="btn btn-danger" style="float:right;">Back to Module list</a>
     </div>
+
 </div>   
 
 </body>
